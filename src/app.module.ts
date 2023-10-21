@@ -8,6 +8,7 @@ import { RolesController } from './roles/controllers/roles.controller';
 import { RolesModule } from './roles/roles.module';
 import { RoleModel } from './roles/models/roles.model';
 import { UserRoleModel } from './roles/models/user-roles.model';
+import { AuthModule } from './auth/module/auth.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { UserRoleModel } from './roles/models/user-roles.model';
       autoLoadModels: true
     }),
     UsersModule,
-    RolesModule
+    RolesModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
