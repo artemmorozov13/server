@@ -3,12 +3,14 @@ import { UsersModule } from './users';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
 import { UserModel } from './users/models/users.model';
-import { RolesService } from './roles/roles.service';
-import { RolesController } from './roles/controllers/roles.controller';
 import { RolesModule } from './roles/roles.module';
 import { RoleModel } from './roles/models/roles.model';
 import { UserRoleModel } from './roles/models/user-roles.model';
 import { AuthModule } from './auth/module/auth.module';
+import { DatesModule } from './dates/dates.module';
+import { TimesModule } from './times/times.module';
+import { DateModel } from './dates/dates.model';
+import { TimeModel } from './times/times.model';
 
 @Module({
   imports: [
@@ -25,13 +27,17 @@ import { AuthModule } from './auth/module/auth.module';
       models: [
         UserModel,
         RoleModel,
-        UserRoleModel
+        UserRoleModel,
+        DateModel,
+        TimeModel
       ],
       autoLoadModels: true
     }),
     UsersModule,
     RolesModule,
-    AuthModule
+    AuthModule,
+    DatesModule,
+    TimesModule
   ],
   controllers: [],
   providers: [],
