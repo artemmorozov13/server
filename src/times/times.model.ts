@@ -22,9 +22,21 @@ export class TimeModel extends Model<TimeModel, TimeOptions> {
     @Column({ type: DataType.STRING, allowNull: false })
     endTime: string
 
+    @ApiProperty({ example: 'Artem', description: 'Costumer name' })
+    @Column({ type: DataType.STRING, allowNull: true, defaultValue: null })
+    firstName: string
+
+    @ApiProperty({ example: '+7(952)244-42-41', description: 'Costumer user name' })
+    @Column({ type: DataType.STRING, allowNull: true, defaultValue: null })
+    phone: string
+
     @ApiProperty({ example: 1, description: 'Date ID' })
     @Column({ type: DataType.INTEGER, allowNull: false })
     dateId: number
+
+    @ApiProperty({ example: true, default: true, description: 'Date ID' })
+    @Column({ type: DataType.BOOLEAN, defaultValue: false })
+    isReserved: boolean
 
     @ForeignKey(() => UserModel)
     @Column({ type: DataType.INTEGER })

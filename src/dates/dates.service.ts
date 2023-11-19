@@ -13,8 +13,8 @@ export class DateService {
     private timeService: TimeService
   ) {}
 
-  async findAll(): Promise<DateModel[]> {
-    return this.dateRepository.findAll();
+  async getAllUserDates(userId: number): Promise<DateModel[]> {
+    return this.dateRepository.findAll({ where: { userId } });
   }
 
   async findOne(id: number) {
@@ -26,20 +26,36 @@ export class DateService {
     return date
   }
 
-  async create(dto: CreateDateDto) {
-    const { date, userId, times } = dto;
+  async createManyDates(dates: CreateDateDto[]) {
+    const createdDates = [];
 
-    const dateResponse = await this.dateRepository.create({ date, userId });
+    const dateEntities = dates.map(dto => {
+      const { date, userId } = dto;
+      return { date, userId };
+    });
 
-    const timesBody = times.map(time => ({
-        ...time,
+    const insertedDates = await this.dateRepository.bulkCreate(dateEntities);
+
+    for (let i = 0; i < insertedDates.length; i++) {
+      const dateResponse = insertedDates[i];
+      const dto = dates[i];
+      const { times } = dto;
+
+      const timesBody = times.map(time => ({
+        startTime: time.startTime,
+        endTime: time.endTime,
         dateId: dateResponse.id,
-        userId: userId
-    }))
-    const createdTimes = await this.timeService.createManyTimes(timesBody);
-    await dateResponse.$set('times', createdTimes);
+        userId: dto.userId,
+        isReserved: false
+      }));
 
-    return this.findOne(dateResponse.id);
+      const createdTimes = await this.timeService.createManyTimes(timesBody);
+      await dateResponse.$set('times', createdTimes);
+
+      createdDates.push(dateResponse);
+    }
+
+    return createdDates;
   }
 
   async update(id: number, dateData: Partial<DateModel>): Promise<[number, DateModel[]]> {

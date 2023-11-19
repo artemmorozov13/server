@@ -3,6 +3,7 @@ import { TimeService } from './times.service';
 import { TimeController } from './times.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { TimeModel } from './times.model';
+import { AuthModule } from 'src/auth';
 
 @Module({
   providers: [
@@ -14,7 +15,8 @@ import { TimeModel } from './times.model';
   imports: [
     SequelizeModule.forFeature([
       TimeModel
-    ])
+    ]),
+    AuthModule
   ],
   exports: [
     TimeService

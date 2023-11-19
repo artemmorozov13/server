@@ -10,16 +10,16 @@ import { UpdateDateDto } from './dto/UpdateDateDto';
 export class DateController {
   constructor(private dateService: DateService) {}
 
-  @ApiOperation({ summary: 'Get all dates' })
-  @ApiResponse({ status: 200, description: 'Return all dates', type: DateModel, isArray: true })
-  @Get()
-  async getAllDates(): Promise<DateModel[]> {
-    return this.dateService.findAll();
+  @ApiOperation({ summary: 'Получить все даты пользователя' })
+  @ApiResponse({ status: 200, description: 'Возвращает все даты', type: DateModel, isArray: true })
+  @Get('user/:userId')
+  async getAllUserDates(@Param('userId') userId: number): Promise<DateModel[]> {
+    return this.dateService.getAllUserDates(userId);
   }
 
-  @ApiOperation({ summary: 'Get a date by ID' })
-  @ApiParam({ name: 'id', example: 1, description: 'Date ID' })
-  @ApiResponse({ status: 200, description: 'Return the date', type: DateModel })
+  @ApiOperation({ summary: 'Получить дату по id' })
+  @ApiParam({ name: 'id', example: 1, description: 'id даты' })
+  @ApiResponse({ status: 200, description: 'Возвращает модель даты', type: DateModel })
   @Get(':id')
   async getDateById(@Param('id') id: number) {
     const date = await this.dateService.findOne(id);
@@ -29,9 +29,11 @@ export class DateController {
   @ApiOperation({ summary: 'Create a new date' })
   @ApiResponse({ status: 201, description: 'The date has been successfully created', type: DateModel })
   @Post()
-  async createDate(@Body() createDateDto: CreateDateDto) {
-    return this.dateService.create(createDateDto);
+  async createManyDates(@Body() dto: CreateDateDto[]) {
+    return this.dateService.createManyDates(dto);
   }
+
+  // ___________________________________________
 
   @ApiOperation({ summary: 'Update a date by ID' })
   @ApiParam({ name: 'id', example: 1, description: 'Date ID' })

@@ -1,28 +1,37 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { TimeService } from './times.service';
 import { CreateTimeDto } from './dto/CreateTimeDto';
 import { TimeModel } from './times.model';
 import { UpdateTimeDto } from './dto/UpdateTimeDto';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateReservationDto } from './dto/UpdateReservationDto';
+import { Roles } from 'src/auth/guard/role-auth-decorator';
+import { RoleGuard } from 'src/auth/guard/role-guard';
+import { ADMIN_ROLE } from 'src/constants/rolesConstant';
 
 @ApiTags('Запросы для времени записи')
 @Controller('times')
 export class TimeController {
   constructor(private readonly timeService: TimeService) {}
 
-  @Post()
-  async createTime(@Body() createTimeDto: CreateTimeDto): Promise<TimeModel> {
-    return this.timeService.createTime(createTimeDto);
+  @Roles(ADMIN_ROLE)
+  @UseGuards(RoleGuard)
+  @Get('date/:dateId')
+  async getTimesByDateId(@Param("dateId") dateId: number) {
+    return this.timeService.getTimesByDateId(dateId);
+  } 
+
+  @Get('date/:dateId/available')
+  async getNotReservedTimesByDateId (@Param("dateId") dateId: number) {
+    return this.timeService.getNotReservedTimesByDateId(dateId)
   }
 
-  @Get()
-  async getAllTimes(): Promise<TimeModel[]> {
-    return this.timeService.getAllTimes();
-  }
-
-  @Get(':id')
-  async getTimeById(@Param('id') id: number): Promise<TimeModel> {
-    return this.timeService.getTimeById(id);
+  @Put(':timeId')
+  async updateTimeReservationStatus(
+    @Param('timeId') timeId: number,
+    @Body() updatedReservationStatus: UpdateReservationDto
+  ) {
+    return this.timeService.updateTimeReservationStatusByTimeId(timeId, updatedReservationStatus)
   }
 
   @Put(':id')
@@ -30,7 +39,19 @@ export class TimeController {
     @Param('id') id: number,
     @Body() updateTimeDto: UpdateTimeDto,
   ): Promise<TimeModel> {
-    return this.timeService.updateTime(id, updateTimeDto);
+    return this.timeService.updateTimeById(id, updateTimeDto);
+  }
+
+
+
+  @Post()
+  async createTime(@Body() createTimeDto: CreateTimeDto): Promise<TimeModel> {
+    return this.timeService.createTime(createTimeDto);
+  }
+
+  @Get(':id')
+  async getTimeById(@Param('id') id: number): Promise<TimeModel> {
+    return this.timeService.getTimeById(id);
   }
 
   @Delete(':id')
