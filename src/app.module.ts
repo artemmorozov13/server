@@ -15,7 +15,7 @@ import { TimeModel } from './times/times.model';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env'
+      envFilePath: '.env',
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
@@ -24,23 +24,16 @@ import { TimeModel } from './times/times.model';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [
-        UserModel,
-        RoleModel,
-        UserRoleModel,
-        DateModel,
-        TimeModel
-      ],
-      autoLoadModels: true
+      models: [UserModel, RoleModel, UserRoleModel, DateModel, TimeModel],
+      autoLoadModels: true,
     }),
     UsersModule,
     RolesModule,
     AuthModule,
     DatesModule,
-    TimesModule
+    TimesModule,
   ],
   controllers: [],
   providers: [],
 })
-
 export class AppModule {}

@@ -1,25 +1,49 @@
-import { Model, Column, DataType, HasMany, Table, ForeignKey } from "sequelize-typescript";
-import { TimeModel } from "src/times/times.model";
-import { UserModel } from "src/users/models/users.model";
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  Model,
+  Column,
+  DataType,
+  HasMany,
+  Table,
+  ForeignKey,
+} from 'sequelize-typescript';
+import { TimeModel } from 'src/times/times.model';
+import { UserModel } from 'src/users/models/users.model';
 
 interface DateOptions {
-    date: string
-    times: TimeModel[]
-    userId: number
+  date: string;
+  times: TimeModel[];
+  userId: number;
 }
 
-@Table({ tableName: "dates" })
+@Table({ tableName: 'dates' })
 export class DateModel extends Model<DateModel, DateOptions> {
-    @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
-    id: number
+  @ApiProperty({ example: '1', description: 'Уникальный идентификатор' })
+  @Column({
+    type: DataType.INTEGER,
+    unique: true,
+    autoIncrement: true,
+    primaryKey: true,
+  })
+  id: number;
 
-    @Column({ type: DataType.STRING, allowNull: false })
-    date: string
+  @ApiProperty({
+    example: '2023-11-22T21:00:00.000Z',
+    description: 'Дата записи',
+  })
+  @Column({ type: DataType.STRING, allowNull: false })
+  date: string;
 
-    @ForeignKey(() => UserModel)
-    @Column({ type: DataType.INTEGER })
-    userId: number
+  @ApiProperty({ example: '21', description: 'id пользователя' })
+  @ForeignKey(() => UserModel)
+  @Column({ type: DataType.INTEGER })
+  userId: number;
 
-    @HasMany(() => TimeModel, "dateId")
-    times: TimeModel[]
+  @ApiProperty({
+    type: TimeModel,
+    description: 'Доступное время для записи',
+    isArray: true,
+  })
+  @HasMany(() => TimeModel, 'dateId')
+  times: TimeModel[];
 }

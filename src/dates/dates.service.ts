@@ -10,26 +10,26 @@ export class DateService {
   constructor(
     @InjectModel(DateModel)
     private dateRepository: typeof DateModel,
-    private timeService: TimeService
+    private timeService: TimeService,
   ) {}
 
-  async getAllUserDates(userId: number): Promise<DateModel[]> {
+  async getAllUserDatesWithoutTimes(userId: number): Promise<DateModel[]> {
     return this.dateRepository.findAll({ where: { userId } });
   }
 
   async findOne(id: number) {
     const date = await this.dateRepository.findOne({
-        where: { id },
-        include: [TimeModel]
+      where: { id },
+      include: [TimeModel],
     });
 
-    return date
+    return date;
   }
 
   async createManyDates(dates: CreateDateDto[]) {
     const createdDates = [];
 
-    const dateEntities = dates.map(dto => {
+    const dateEntities = dates.map((dto) => {
       const { date, userId } = dto;
       return { date, userId };
     });
@@ -41,12 +41,14 @@ export class DateService {
       const dto = dates[i];
       const { times } = dto;
 
-      const timesBody = times.map(time => ({
+      const timesBody = times.map((time) => ({
         startTime: time.startTime,
         endTime: time.endTime,
+        firstName: null,
+        phone: null,
         dateId: dateResponse.id,
         userId: dto.userId,
-        isReserved: false
+        isReserved: false,
       }));
 
       const createdTimes = await this.timeService.createManyTimes(timesBody);
@@ -58,10 +60,15 @@ export class DateService {
     return createdDates;
   }
 
-  async update(id: number, dateData: Partial<DateModel>): Promise<[number, DateModel[]]> {
-    return this.dateRepository.update(dateData, { where: { id } }).then(([affectedCount]) => {
-      return [affectedCount, []];
-    });
+  async update(
+    id: number,
+    dateData: Partial<DateModel>,
+  ): Promise<[number, DateModel[]]> {
+    return this.dateRepository
+      .update(dateData, { where: { id } })
+      .then(([affectedCount]) => {
+        return [affectedCount, []];
+      });
   }
 
   async delete(id: number): Promise<number> {

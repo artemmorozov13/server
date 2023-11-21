@@ -6,20 +6,9 @@ import { TimeModel } from './times.model';
 import { AuthModule } from 'src/auth';
 
 @Module({
-  providers: [
-    TimeService
-  ],
-  controllers: [
-    TimeController
-  ],
-  imports: [
-    SequelizeModule.forFeature([
-      TimeModel
-    ]),
-    AuthModule
-  ],
-  exports: [
-    TimeService
-  ]
+  providers: [TimeService],
+  controllers: [TimeController],
+  imports: [SequelizeModule.forFeature([TimeModel]), AuthModule],
+  exports: [TimeService],
 })
 export class TimesModule {}

@@ -1,17 +1,28 @@
-import { Model, Column, DataType, Table, ForeignKey } from "sequelize-typescript";
-import { RoleModel } from "./roles.model";
-import { UserModel } from "src/users/models/users.model";
+import {
+  Model,
+  Column,
+  DataType,
+  Table,
+  ForeignKey,
+} from 'sequelize-typescript';
+import { RoleModel } from './roles.model';
+import { UserModel } from 'src/users/models/users.model';
 
-@Table({ tableName: "user_roles", createdAt: false, updatedAt: false })
+@Table({ tableName: 'user_roles', createdAt: false, updatedAt: false })
 export class UserRoleModel extends Model<UserRoleModel> {
-    @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
-    id: number
+  @Column({
+    type: DataType.INTEGER,
+    unique: true,
+    autoIncrement: true,
+    primaryKey: true,
+  })
+  id: number;
 
-    @ForeignKey(() => RoleModel)
-    @Column({ type: DataType.INTEGER })
-    roleId: number
+  @ForeignKey(() => RoleModel)
+  @Column({ type: DataType.INTEGER })
+  roleId: number;
 
-    @ForeignKey(() => UserModel)
-    @Column({ type: DataType.INTEGER })
-    userId: number
+  @ForeignKey(() => UserModel)
+  @Column({ type: DataType.INTEGER })
+  userId: number;
 }

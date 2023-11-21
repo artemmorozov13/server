@@ -5,20 +5,16 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { DateModel } from './dates.model';
 import { TimesModule } from 'src/times/times.module';
 import { RolesModule } from 'src/roles/roles.module';
+import { AuthModule } from 'src/auth';
 
 @Module({
-  controllers: [
-    DateController
-  ],
-  providers: [
-    DateService
-  ],
+  controllers: [DateController],
+  providers: [DateService],
   imports: [
-    SequelizeModule.forFeature([
-      DateModel
-    ]),
+    SequelizeModule.forFeature([DateModel]),
+    AuthModule,
     TimesModule,
-    RolesModule
-  ]
+    RolesModule,
+  ],
 })
 export class DatesModule {}
